@@ -25,7 +25,7 @@ func (controller *PostsController) Create(ctx *gin.Context) {
 	createPostsRequest := request.CreatePostsRequest{}
 	err := ctx.ShouldBindJSON(&createPostsRequest)
 	if err != nil {
-		helpers.ResponseHandler(ctx, http.StatusBadRequest, "Invalid post create request.", nil)
+		helpers.ResponseHandler(ctx, http.StatusBadRequest, "Invalid post create.", nil)
 		return
 	}
 

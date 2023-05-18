@@ -20,19 +20,26 @@ func main() {
 	db := config.ConnectDB()
 	validate := validator.New()
 
+	//Table
+	db.Table("users").AutoMigrate(&models.Users{})
 	db.Table("posts").AutoMigrate(&models.Posts{})
 
-	// Interface
+	//Users
+	usersInterface := interfaces.NewUsersInterfaceImpl(db)
+	authService := services.NewAuthServiceImpl(usersInterface, validate)
+	authController := controllers.NewAuthController(authService)
+	usersController := controllers.NewUsercontroller(usersInterface)
+
+	//Post
+	db.Table("posts").AutoMigrate(&models.Posts{})
 	postsInterface := interfaces.NewPostsInterfaceImpl(db)
-
-	//Service
 	postsService := services.NewPostsServiceImpl(postsInterface, validate)
-
-	//Controller
-	postController := controllers.NewpostsController(postsService)
+	postsController := controllers.NewpostsController(postsService)
 
 	//Router
-	routes := routers.NewPostsRouter(postController)
+	// routes := routers.NewUsersRouter(usersInterface, authController, usersController)
+	// routes := routers.NewPostsRouter(postsController)
+	routes := routers.Router(authController, usersController, usersInterface, postsController)
 
 	server := &http.Server{
 		Addr:    ":8080",
