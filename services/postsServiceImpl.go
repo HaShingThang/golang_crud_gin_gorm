@@ -22,7 +22,7 @@ func NewPostsServiceImpl(postInterface interfaces.PostsInterface, validate *vali
 }
 
 // Create implements PostsService.
-func (pst *PostsServiceImpl) Create(posts request.CreatePostsRequest) {
+func (pst *PostsServiceImpl) Create(posts request.CreatePostsRequest) response.PostsResponse {
 	err := pst.Validate.Struct(posts)
 	helpers.ErrorHandler(err)
 	Posts := models.Posts{
@@ -30,6 +30,7 @@ func (pst *PostsServiceImpl) Create(posts request.CreatePostsRequest) {
 		Description: posts.Description,
 	}
 	pst.PostsInterface.Save(Posts)
+	return response.PostsResponse(Posts)
 }
 
 // Delete implements PostsService.
@@ -68,10 +69,11 @@ func (pst *PostsServiceImpl) FindById(postsId int) response.PostsResponse {
 }
 
 // Update implements PostsService.
-func (pst *PostsServiceImpl) Update(posts request.UpdatePostsRequest) {
+func (pst *PostsServiceImpl) Update(posts request.UpdatePostsRequest) response.PostsResponse {
 	postData, err := pst.PostsInterface.FindById(posts.Id)
 	helpers.ErrorHandler(err)
 	postData.Title = posts.Title
 	postData.Description = posts.Description
 	pst.PostsInterface.Update(postData)
+	return response.PostsResponse(postData)
 }

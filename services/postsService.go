@@ -6,8 +6,8 @@ import (
 )
 
 type PostsService interface {
-	Create(posts request.CreatePostsRequest)
-	Update(posts request.UpdatePostsRequest)
+	Create(posts request.CreatePostsRequest) response.PostsResponse
+	Update(posts request.UpdatePostsRequest) response.PostsResponse
 	Delete(postsId int)
 	FindById(postsId int) response.PostsResponse
 	FindAll() []response.PostsResponse
