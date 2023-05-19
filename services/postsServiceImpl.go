@@ -49,6 +49,7 @@ func (ps *PostsServiceImpl) FindAll() []response.PostResponse {
 			Id:          value.Id,
 			Title:       value.Title,
 			Description: value.Description,
+			UserId:      value.UserId,
 		}
 		posts = append(posts, post)
 	}
@@ -65,6 +66,7 @@ func (ps *PostsServiceImpl) FindById(postsId int) response.PostResponse {
 		Id:          postData.Id,
 		Title:       postData.Title,
 		Description: postData.Description,
+		UserId:      postData.UserId,
 	}
 	return postRes
 }
