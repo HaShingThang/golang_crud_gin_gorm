@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/HaShingThang/golang_crud_gin_gorm/config"
 	"github.com/HaShingThang/golang_crud_gin_gorm/controllers"
-	"github.com/HaShingThang/golang_crud_gin_gorm/helpers"
 	"github.com/HaShingThang/golang_crud_gin_gorm/interfaces"
 	"github.com/HaShingThang/golang_crud_gin_gorm/migrations"
 	"github.com/HaShingThang/golang_crud_gin_gorm/routers"
@@ -29,8 +26,7 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 	usersController := controllers.NewUsercontroller(usersInterface)
 
-	//Post
-	// db.Table("posts").AutoMigrate(&models.Post{})
+	//Posts
 	postsInterface := interfaces.NewPostsInterfaceImpl(db)
 	postsService := services.NewPostsServiceImpl(postsInterface, validate)
 	postsController := controllers.NewPostsController(postsService)
@@ -38,13 +34,6 @@ func main() {
 	//Router
 	routes := routers.Router(authController, usersController, usersInterface, postsController)
 
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: routes,
-	}
-
 	fmt.Println("Server running on http://localhost:8080")
-
-	err := server.ListenAndServe()
-	helpers.ErrorHandler(err)
+	routes.Run(":8080")
 }
