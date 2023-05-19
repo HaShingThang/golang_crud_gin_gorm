@@ -32,7 +32,7 @@ func (auth *AuthServiceImpl) Register(users request.CreateUserRequest) {
 	hashedPassword, err := utils.HashPassword(users.Password)
 	helpers.ErrorHandler(err)
 
-	newUser := models.Users{
+	newUser := models.User{
 		Username: users.Username,
 		Email:    users.Email,
 		Password: hashedPassword,
@@ -68,7 +68,7 @@ func (auth *AuthServiceImpl) Login(users request.LoginRequest) (string, error) {
 }
 
 // FindByEmail implements Authservice.
-func (auth *AuthServiceImpl) FindByEmail(email string) (models.Users) {
+func (auth *AuthServiceImpl) FindByEmail(email string) models.User {
 	user, _ := auth.UsersInterface.FindByEmail(email)
 
 	return user

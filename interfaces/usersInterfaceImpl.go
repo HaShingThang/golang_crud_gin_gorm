@@ -19,35 +19,33 @@ func NewUsersInterfaceImpl(Db *gorm.DB) UsersInterface {
 
 // Delete implements UsersInterface.
 func (user *UsersInterfaceImpl) Delete(userId int) {
-	var users models.Users
+	var users models.User
 	result := user.Db.Where("id = ?", userId).Delete(&users)
 	helpers.ErrorHandler(result.Error)
 }
 
 // FindAll implements UsersInterface.
-func (user *UsersInterfaceImpl) FindAll() []models.Users {
-	var users []models.Users
-	result := user.Db.Find(&users)
+func (user *UsersInterfaceImpl) FindAll() []models.User {
+	var users []models.User
+	result := user.Db.Preload("Posts").Find(&users)
 	helpers.ErrorHandler(result.Error)
 	return users
 }
 
 // FindById implements UsersInterface.
-func (user *UsersInterfaceImpl) FindById(userId int) (models.Users, error) {
-	var users models.Users
-	result := user.Db.Find(&users, userId)
-	if result != nil {
-		return users, nil
-	} else {
+func (user *UsersInterfaceImpl) FindById(userId int) (models.User, error) {
+	var users models.User
+	result := user.Db.Preload("Posts").First(&users, userId)
+	if result.Error != nil {
 		return users, errors.New("user not found")
 	}
+	return users, nil
 }
 
 // FindByUsername implements UsersInterface.
-func (user *UsersInterfaceImpl) FindByUsername(username string) (models.Users, error) {
-	var users models.Users
-	result := user.Db.First(&users, "username = ?", username)
-
+func (user *UsersInterfaceImpl) FindByUsername(username string) (models.User, error) {
+	var users models.User
+	result := user.Db.Preload("Posts").First(&users, "username = ?", username)
 	if result.Error != nil {
 		return users, errors.New("invalid username or password")
 	}
@@ -55,10 +53,9 @@ func (user *UsersInterfaceImpl) FindByUsername(username string) (models.Users, e
 }
 
 // FindByEmail implements UsersInterface.
-func (user *UsersInterfaceImpl) FindByEmail(email string) (models.Users, error) {
-	var users models.Users
-	result := user.Db.First(&users, "email = ?", email)
-
+func (user *UsersInterfaceImpl) FindByEmail(email string) (models.User, error) {
+	var users models.User
+	result := user.Db.Preload("Posts").First(&users, "email = ?", email)
 	if result.Error != nil {
 		return users, errors.New("invalid email or password")
 	}
@@ -66,13 +63,13 @@ func (user *UsersInterfaceImpl) FindByEmail(email string) (models.Users, error) 
 }
 
 // Save implements UsersInterface.
-func (user *UsersInterfaceImpl) Save(users models.Users) {
+func (user *UsersInterfaceImpl) Save(users models.User) {
 	result := user.Db.Create(&users)
 	helpers.ErrorHandler(result.Error)
 }
 
 // Update implements UsersInterface.
-func (user *UsersInterfaceImpl) Update(users models.Users) {
+func (user *UsersInterfaceImpl) Update(users models.User) {
 	var updateUsers = request.UpdateUserRequest{
 		Id:       users.Id,
 		Username: users.Username,

@@ -22,29 +22,30 @@ func NewPostsServiceImpl(postInterface interfaces.PostsInterface, validate *vali
 }
 
 // Create implements PostsService.
-func (pst *PostsServiceImpl) Create(posts request.CreatePostsRequest) response.PostsResponse {
-	err := pst.Validate.Struct(posts)
+func (ps *PostsServiceImpl) Create(posts request.CreatePostRequest) response.PostResponse {
+	err := ps.Validate.Struct(posts)
 	helpers.ErrorHandler(err)
-	Posts := models.Posts{
+	Posts := models.Post{
 		Title:       posts.Title,
 		Description: posts.Description,
+		UserId:      posts.UserId,
 	}
-	pst.PostsInterface.Save(Posts)
-	return response.PostsResponse(Posts)
+	ps.PostsInterface.Save(Posts)
+	return response.PostResponse(Posts)
 }
 
 // Delete implements PostsService.
-func (pst *PostsServiceImpl) Delete(postsId int) {
-	pst.PostsInterface.Delete(postsId)
+func (ps *PostsServiceImpl) Delete(postsId int) {
+	ps.PostsInterface.Delete(postsId)
 }
 
 // FindAll implements PostsService.
-func (pst *PostsServiceImpl) FindAll() []response.PostsResponse {
-	result := pst.PostsInterface.FindAll()
+func (ps *PostsServiceImpl) FindAll() []response.PostResponse {
+	result := ps.PostsInterface.FindAll()
 
-	var posts []response.PostsResponse
+	var posts []response.PostResponse
 	for _, value := range result {
-		post := response.PostsResponse{
+		post := response.PostResponse{
 			Id:          value.Id,
 			Title:       value.Title,
 			Description: value.Description,
@@ -56,11 +57,11 @@ func (pst *PostsServiceImpl) FindAll() []response.PostsResponse {
 }
 
 // FindById implements PostsService.
-func (pst *PostsServiceImpl) FindById(postsId int) response.PostsResponse {
-	postData, err := pst.PostsInterface.FindById(postsId)
+func (ps *PostsServiceImpl) FindById(postsId int) response.PostResponse {
+	postData, err := ps.PostsInterface.FindById(postsId)
 	helpers.ErrorHandler(err)
 
-	postRes := response.PostsResponse{
+	postRes := response.PostResponse{
 		Id:          postData.Id,
 		Title:       postData.Title,
 		Description: postData.Description,
@@ -69,11 +70,11 @@ func (pst *PostsServiceImpl) FindById(postsId int) response.PostsResponse {
 }
 
 // Update implements PostsService.
-func (pst *PostsServiceImpl) Update(posts request.UpdatePostsRequest) response.PostsResponse {
-	postData, err := pst.PostsInterface.FindById(posts.Id)
+func (ps *PostsServiceImpl) Update(posts request.UpdatePostRequest) response.PostResponse {
+	postData, err := ps.PostsInterface.FindById(posts.Id)
 	helpers.ErrorHandler(err)
 	postData.Title = posts.Title
 	postData.Description = posts.Description
-	pst.PostsInterface.Update(postData)
-	return response.PostsResponse(postData)
+	ps.PostsInterface.Update(postData)
+	return response.PostResponse(postData)
 }

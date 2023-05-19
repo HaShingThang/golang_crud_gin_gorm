@@ -8,5 +8,5 @@ import (
 type Authservice interface {
 	Login(users request.LoginRequest) (string, error)
 	Register(users request.CreateUserRequest)
-	FindByEmail(email string) (models.Users)
+	FindByEmail(email string) models.User
 }

@@ -1,13 +1,14 @@
 package request
 
-type CreatePostsRequest struct {
-	Title       string `validate:"required,min=1,max=80" json:"title"`
-	Description string `validate:"required,min=1,max=1500" json:"description"`
+type CreatePostRequest struct {
+	Title       string `json:"title" validate:"required,min=1,max=80"`
+	Description string `json:"description" validate:"required,min=1,max=1500"`
+	UserId      int    `json:"userId" validate:"required"`
 }
 
-type UpdatePostsRequest struct {
+type UpdatePostRequest struct {
 	Id          int    `validate:"required"`
-	Title       string `validate:"required,min=1,max=80" json:"title"`
-	Description string `validate:"required,min=1,max=1500" json:"description"`
+	Title       string `json:"title" validate:"required,min=1,max=80"`
+	Description string `json:"description" validate:"required,min=1,max=1500"`
+	UserId      int    `json:"userId" validate:"required"`
 }
-

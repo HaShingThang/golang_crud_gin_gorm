@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDB() *gorm.DB {
+func ConnectDB() (*gorm.DB, error) {
 	err := godotenv.Load(".env")
 	helpers.ErrorHandler(err)
 
@@ -26,5 +26,5 @@ func ConnectDB() *gorm.DB {
 
 	fmt.Println("Database Connected!")
 
-	return db
+	return db, nil
 }

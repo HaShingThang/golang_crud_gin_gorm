@@ -8,7 +8,7 @@ import (
 	"github.com/HaShingThang/golang_crud_gin_gorm/controllers"
 	"github.com/HaShingThang/golang_crud_gin_gorm/helpers"
 	"github.com/HaShingThang/golang_crud_gin_gorm/interfaces"
-	"github.com/HaShingThang/golang_crud_gin_gorm/models"
+	"github.com/HaShingThang/golang_crud_gin_gorm/migrations"
 	"github.com/HaShingThang/golang_crud_gin_gorm/routers"
 	"github.com/HaShingThang/golang_crud_gin_gorm/services"
 	"github.com/go-playground/validator/v10"
@@ -17,12 +17,11 @@ import (
 func main() {
 
 	// Database
-	db := config.ConnectDB()
+	db, _ := config.ConnectDB()
 	validate := validator.New()
 
 	//Table
-	db.Table("users").AutoMigrate(&models.Users{})
-	db.Table("posts").AutoMigrate(&models.Posts{})
+	migrations.RunMigrations(db)
 
 	//Users
 	usersInterface := interfaces.NewUsersInterfaceImpl(db)
@@ -31,14 +30,12 @@ func main() {
 	usersController := controllers.NewUsercontroller(usersInterface)
 
 	//Post
-	db.Table("posts").AutoMigrate(&models.Posts{})
+	// db.Table("posts").AutoMigrate(&models.Post{})
 	postsInterface := interfaces.NewPostsInterfaceImpl(db)
 	postsService := services.NewPostsServiceImpl(postsInterface, validate)
-	postsController := controllers.NewpostsController(postsService)
+	postsController := controllers.NewPostsController(postsService)
 
 	//Router
-	// routes := routers.NewUsersRouter(usersInterface, authController, usersController)
-	// routes := routers.NewPostsRouter(postsController)
 	routes := routers.Router(authController, usersController, usersInterface, postsController)
 
 	server := &http.Server{

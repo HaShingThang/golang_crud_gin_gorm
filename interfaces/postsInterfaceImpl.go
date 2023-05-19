@@ -17,30 +17,30 @@ func NewPostsInterfaceImpl(Db *gorm.DB) PostsInterface {
 	return &PostsInterfaceImpl{Db: Db}
 }
 
-// Create implements PostsInterface.
-func (post *PostsInterfaceImpl) Save(posts models.Posts) {
+// Save implements PostsInterface.
+func (post *PostsInterfaceImpl) Save(posts models.Post) {
 	result := post.Db.Create(&posts)
 	helpers.ErrorHandler(result.Error)
 }
 
 // Delete implements PostsInterface.
 func (post *PostsInterfaceImpl) Delete(postsId int) {
-	var posts models.Posts
+	var posts models.Post
 	result := post.Db.Where("id = ?", postsId).Delete(&posts)
 	helpers.ErrorHandler(result.Error)
 }
 
 // FindAll implements PostsInterface.
-func (post *PostsInterfaceImpl) FindAll() []models.Posts {
-	var posts []models.Posts
+func (post *PostsInterfaceImpl) FindAll() []models.Post {
+	var posts []models.Post
 	result := post.Db.Find(&posts)
 	helpers.ErrorHandler(result.Error)
 	return posts
 }
 
 // FindById implements PostsInterface.
-func (post *PostsInterfaceImpl) FindById(postsId int) (posts models.Posts, err error) {
-	var pst models.Posts
+func (post *PostsInterfaceImpl) FindById(postsId int) (posts models.Post, err error) {
+	var pst models.Post
 	result := post.Db.Find(&pst, postsId)
 	if result != nil {
 		return pst, nil
@@ -50,11 +50,12 @@ func (post *PostsInterfaceImpl) FindById(postsId int) (posts models.Posts, err e
 }
 
 // Update implements PostsInterface.
-func (post *PostsInterfaceImpl) Update(posts models.Posts) {
-	var updatepost = request.UpdatePostsRequest{
+func (post *PostsInterfaceImpl) Update(posts models.Post) {
+	var updatepost = request.UpdatePostRequest{
 		Id:          posts.Id,
 		Title:       posts.Title,
 		Description: posts.Description,
+		UserId:      posts.UserId,
 	}
 	result := post.Db.Model(&posts).Updates(updatepost)
 	helpers.ErrorHandler(result.Error)
