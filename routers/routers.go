@@ -45,9 +45,9 @@ func PostsRouter(router *gin.RouterGroup, postsController *controllers.PostsCont
 	postsRouter := router.Group("/posts")
 	{
 		postsRouter.GET("", middlewares.IsAuth(usersInterface), postsController.FindAll)
-		postsRouter.GET("/:postId", postsController.FindById)
-		postsRouter.POST("", postsController.Create)
-		postsRouter.PATCH("/:postId", postsController.Update)
-		postsRouter.DELETE("/:postId", postsController.Delete)
+		postsRouter.GET("/:postId", middlewares.IsAuth(usersInterface), postsController.FindById)
+		postsRouter.POST("", middlewares.IsAuth(usersInterface), postsController.Create)
+		postsRouter.PATCH("/:postId", middlewares.IsAuth(usersInterface), postsController.Update)
+		postsRouter.DELETE("/:postId", middlewares.IsAuth(usersInterface), postsController.Delete)
 	}
 }

@@ -26,7 +26,7 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 	usersController := controllers.NewUsercontroller(usersInterface)
 
-	//Posts
+	//Post
 	postsInterface := interfaces.NewPostsInterfaceImpl(db)
 	postsService := services.NewPostsServiceImpl(postsInterface, validate)
 	postsController := controllers.NewPostsController(postsService)
